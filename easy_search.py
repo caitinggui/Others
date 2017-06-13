@@ -16,7 +16,7 @@ analyzer = ChineseAnalyzer()
 #    为避免占用空间过大，可以定义为False，然后通过ID定位到数据库\
 #    中，通过数据库获取
 schema = Schema(
-    title=TEXT(stored=True, analyzer=analyzer, vector=True),
+    title=TEXT(stored=True, analyzer=analyzer, vector=True, phrase=True),
     path=ID(stored=True),
     # 可被检索，但content的内容不出现在检索的结果中
     content=TEXT(stored=False, analyzer=analyzer),
