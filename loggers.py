@@ -43,11 +43,22 @@ log_setting = {
             "stream": "ext://sys.stdout",
             "level": "DEBUG"
         },
-        "file": {
+        "rotatingfile": {
             "formatter": "standard",
             "filename": "log.log",
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG"
+            "level": "DEBUG",
+            "maxBytes": 1024 * 1024 * 100,  # 单位为字节，这里为100MB
+            "backCount": 60                 # 保留60份
+        },
+        "timefile": {
+            "formatter": "standard",
+            "filename": "log.log",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "level": "DEBUG",
+            "interval": 1,
+            "when": "midnight",     # 半夜时切分文件,h-小时, s-秒, m-分, d-天, w2-周二
+            "backCount": 60         # 保留60份
         },
         "socket": {
             "level": "DEBUG",
@@ -93,7 +104,7 @@ log_setting = {
     },
     "loggers": {
         "web": {
-            "handlers": ["console", "file"],
+            "handlers": ["console", "timefile"],
             "propagate": False,
             "level": "DEBUG"
         }
