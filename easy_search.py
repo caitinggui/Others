@@ -6,6 +6,10 @@ import json
 from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID, STORED
 from jieba.analyse import ChineseAnalyzer
+import jieba
+
+# 使用前将jieba缓存设置到当前目录，防止/tmp/jieba.cache没有权限
+jieba.dt.tmp_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 使用结巴中文分词
 analyzer = ChineseAnalyzer()
