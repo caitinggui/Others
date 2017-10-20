@@ -18,26 +18,40 @@ class IdiomSolitaire(object):
         self.line = []
         self.words = set()
         self.most = set()
+        self.little = set()
+        flag = 'idiom'
         with open(self.path, 'r') as f:
             for word in f.xreadlines():
-                word = word.decode('utf-8')
-                if len(word) < 4:
-                    self.most.add(word)
+                word = word.decode('utf-8').strip()
+                if word == "#little":
+                    flag = 'little'
+                elif word == "#most":
+                    flag = 'most'
+                if flag == "idiom":
+                    self.words.add(word)
+                elif flag == "little":
+                    self.little.add(word)
                 else:
-                    self.words.add(word.strip())
+                    self.most.add(word)
 
     def findIdiom(self, word):
         """根据首字找到成语, 成语不在已经接龙过的成语列表中，且尾字尽量为常用成语首字"""
         result = []
+        most_result = []
+        little_result = []
         for x in self.words:
             if x.startswith(word) and x not in self.line:
                 if x[-1] in self.most:
-                    return x
+                    most_result.append(x)
+                elif x[-1] in self.little:
+                    little_result.append(x)
                 else:
                     result.append(x)
+        if most_result:
+            result = most_result
+        elif little_result:
+            result = little_result
         if result:
-            # for w in result:
-                # print w
             return result[random.randint(0, len(result) - 1)]
         else:
             return None
@@ -45,7 +59,7 @@ class IdiomSolitaire(object):
     def autoSolitaire(self):
         """根据输入的成语自动成语接龙"""
         word = raw_input("请输入成语, 不要包含任何空格:")
-        word = word.decode('utf-8')
+        word = word.decode('utf-8').strip()
         self.line.append(word)
         while True:
             next_word = self.findIdiom(word[-1])
@@ -54,7 +68,7 @@ class IdiomSolitaire(object):
                 self.line.append(next_word)
             else:
                 print "can't find idiom"
-                print self.line
+                print len(self.line)
                 break
             word = next_word
 
@@ -62,7 +76,7 @@ class IdiomSolitaire(object):
         """和用户成语接龙"""
         word = raw_input("请输入成语, 不要包含任何空格:")
         while True:
-            word = word.decode('utf-8')
+            word = word.decode('utf-8').strip()
             self.line.append(word)
             next_word = self.findIdiom(word[-1])
             if next_word:
@@ -70,14 +84,14 @@ class IdiomSolitaire(object):
                 self.line.append(next_word)
             else:
                 print "can't find idiom and you win"
-                print self.line
+                print len(self.line)
                 break
             word = raw_input("")
 
 
 if __name__ == "__main__":
     idiomsolitire = IdiomSolitaire()
-    if sys.argv[1] == "auto":
+    if len(sys.argv) > 1 and sys.argv[1] == "auto":
         idiomsolitire.autoSolitaire()
     else:
         idiomsolitire.manSolitaire()
