@@ -2,6 +2,8 @@
 import sys
 import random
 
+from xpinyin import Pinyin
+
 """还有一种改进方法：
 words = {u'桂': ['桂子兰孙', '桂子飘香'],
          u'桃': ['桃之夭夭', '桃僵李代']
@@ -45,7 +47,11 @@ class IdiomSolitaire(object):
                     self.most.add(word)
 
     def findIdiom(self, word):
-        """根据首字找到成语, 成语不在已经接龙过的成语列表中，且尾字尽量为常用成语首字"""
+        """
+        根据首字找到成语, 成语不在已经接龙过的成语列表中，且尾字尽量为常用成语首字
+        Args:
+            word: 成语的首字，并非整个成语
+        """
         result = []
         most_result = []
         little_result = []
@@ -99,8 +105,73 @@ class IdiomSolitaire(object):
             word = raw_input("")
 
 
+class IdiomSolitaireNew(IdiomSolitaire):
+    """速度更快一些，支持拼音的成语接龙"""
+
+    def __init__(self, path=None, use_pinyin=True):
+        self.path = path if path else 'idiom.txt'
+        self.line = []
+        self.words = {}
+        self.use_pinyin = use_pinyin
+        if self.use_pinyin:
+            self.pinyin = Pinyin()
+        with open(self.path, 'r') as f:
+            for word in f.xreadlines():
+                word = word.decode('utf-8').strip()
+                # 成语长度大于等于4
+                if len(word) >= 4:
+                    p = self.getPinyin(word[0])
+                    if p in self.words:
+                        self.words[p].append(word)
+                    elif p:
+                        self.words[p] = []
+
+    def getPinyin(self, word):
+        """获取首字的拼音，如果初始化时不适用拼音，则原字返回"""
+        if self.use_pinyin:
+            return self.pinyin.get_pinyin(word, show_tone_marks=True)
+        else:
+            return word
+
+    def findIdiom(self, word):
+        """
+        根据首字找到成语, 成语不在已经接龙过的成语列表中，且尾字尽量为常用成语首字
+        Args:
+            word: 成语的首字，并非整个成语
+        """
+        p = self.getPinyin(word)
+        if p not in self.words:
+            return None
+        result = []
+        most_result = []
+        little_result = []
+        for x in self.words[p]:
+            if x in self.line:
+                continue
+            next_p = self.getPinyin(x[-1])
+            tail_len = len(self.words.get(next_p, []))
+            # 成语的尾字吻合多个成语的首字
+            if tail_len > 2:
+                most_result.append(x)
+            elif tail_len > 0:
+                little_result.append(x)
+            else:
+                result.append(x)
+        if most_result:
+            result = most_result
+        elif little_result:
+            result = little_result
+        if result:
+            return result[random.randint(0, len(result) - 1)]
+        else:
+            return None
+
+
 if __name__ == "__main__":
-    idiomsolitire = IdiomSolitaire()
+    if len(sys.argv) > 2 and sys.argv[2] == "hanzi":
+        idiomsolitire = IdiomSolitaireNew(use_pinyin=False)
+    else:
+        idiomsolitire = IdiomSolitaireNew()
     if len(sys.argv) > 1 and sys.argv[1] == "auto":
         idiomsolitire.autoSolitaire()
     else:
