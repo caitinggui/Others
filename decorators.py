@@ -88,7 +88,9 @@ if __name__ == "__main__":
         time.sleep(3)
         print "func continue"
         time.sleep(6)
+        # 不会打印这一段，说明函数被终止执行
         print "func end"
+        return 'test OK'
 
     @setTimeout(3)
     def test2():
@@ -97,7 +99,8 @@ if __name__ == "__main__":
         print "test2 end"
 
     try:
-        test()
+        print test()
     except RuntimeError as e:
         print "test func abort: ", e
     test2()
+    time.sleep(10)
