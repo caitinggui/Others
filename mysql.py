@@ -35,6 +35,7 @@ while start < all_num:
     start += batch_size
     logger.info("start: %s", start)
 
+# 用逗号连接
 cur.execute("INSERT INTO term_score (term, crter_max, docid_cmax) VALUES (%s, %s, %s)",(query, crter_max, docid_cmax))
 
 import torndb
