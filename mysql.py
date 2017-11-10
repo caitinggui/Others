@@ -40,3 +40,6 @@ cur.execute("INSERT INTO term_score (term, crter_max, docid_cmax) VALUES (%s, %s
 
 import torndb
 mysql = torndb.Connection(host='192.168.112.32',user='username',password='123456',database='law')
+
+# 查找两个表的不同行, A表有的，但是B表没有的
+'SELECT t1.*, t2.*  from A as t1 LEFT JOIN B as t2 ON t1.`name`=t2.`name` OR t1.`name`=t2.new_name WHERE t2.`name` is NULL'
