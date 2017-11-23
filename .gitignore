@@ -2,7 +2,9 @@
 __pycache__
 *.pid
 *.log
+*.swp
 tmp
+*.cache
 
 # fold
 indexdir/
