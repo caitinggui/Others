@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-# codit: utf-8
+# coding: utf-8
+
+"""
+在多进程下只能使用 multiprocessfile，否则可能导致日志丢失、错乱.
+需要安装 pip install ConcurrentLogHandler
+"""
 
 import logging
 
@@ -49,7 +54,7 @@ log_setting = {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "DEBUG",
             "maxBytes": 1024 * 1024 * 100,  # 单位为字节，这里为100MB
-            "backCount": 60                 # 保留60份
+            "backupCount": 60                 # 保留60份
         },
         "timefile": {
             "formatter": "standard",
@@ -58,7 +63,21 @@ log_setting = {
             "level": "DEBUG",
             "interval": 1,
             "when": "midnight",     # 半夜时切分文件,h-小时, s-秒, m-分, d-天, w2-周二
-            "backCount": 60         # 保留60份
+            "backupCount": 60         # 保留60份
+        },
+        "multiprocessfile": {  # 支持多进程下使用，其他handler不支持多进程
+            'formatter': 'standard',
+            "filename": "log.log",
+            # 如果没有使用并发的日志处理类，在多实例的情况下日志会出现缺失
+            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            # 当达到100MB时分割日志
+            'maxBytes': 1024 * 1024 * 100,
+            # 最多保留50份文件
+            'backupCount': 50,
+            'level': 'DEBUG',
+            # If delay is true,
+            # then file opening is deferred until the first call to emit().
+            'delay': True,
         },
         "socket": {
             "level": "DEBUG",
@@ -91,20 +110,22 @@ log_setting = {
             "format": "%(filename)s[line:%(lineno)d]%(levelname)s %(message)s"
         },
         "detail": {
-            "format": "%(asctime)s %(filename)s[line:%(lineno)d]%(name)s %(levelname)s %(message)s"
+            "format": "%(asctime)s %(filename)s[line:%(lineno)d]%(name)s %(levelname)s %(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
         },
         "standard": {
-            "format": "%(asctime)s %(filename)s[line:%(lineno)d]%(levelname)s-%(message)s"
+            "format": "%(asctime)s %(filename)s[line:%(lineno)d]%(levelname)s-%(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
         }
     },
     "root": {
         "level": "WARN",
         "propagate": False,
-        "handlers": ["console", "file"]
+        "handlers": ["console", "rotatingfile"]
     },
     "loggers": {
         "web": {
-            "handlers": ["console", "timefile"],
+            "handlers": ["console", "timefile", "multiprocessfile"],
             "propagate": False,
             "level": "DEBUG"
         }
