@@ -137,3 +137,12 @@ logger = logging.getLogger('web')
 logger.info('Hello world')
 
 
+try:
+    raise KeyError("None Key")
+except KeyError as e:
+    logger.info('---------exception----------')
+    logger.exception(e)
+    logger.info('---------error----------')
+    logger.error(e)
+    logger.info('---------error with exc_info----------')
+    logger.info(e, exc_info=True)
