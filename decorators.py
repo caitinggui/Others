@@ -8,6 +8,7 @@ import functools
 from threading import Thread
 
 from exceptions import RuntimeError
+logging.basicConfig(level=logging.DEBUG)
 
 
 def runTime(func):
@@ -21,6 +22,25 @@ def runTime(func):
         logger.info('%s run time: %f' % (func.__name__, run_time))
         return result
     return wrapper
+
+
+def ensureDone(times):
+    """执行函数times次，直到函数运行成功,否则引发Exception异常。一定要在所有装饰器的最外层！"""
+    logger = logging.getLogger(__name__)
+
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            for i in xrange(times):
+                try:
+                    result = func(*args, **kw)
+                    return result
+                except Exception as e:
+                    logger.warn("execute func: %s fail for %s times: %s",
+                                func.__name__, i, e, exc_info=True)
+            raise Exception(e)
+        return wrapper
+    return decorator
 
 
 def asyncFunc(func):
@@ -81,6 +101,7 @@ def setTimeout(runtime):
 
 if __name__ == "__main__":
 
+    @ensureDone(3)
     @setTimeout(5)
     @showTicker
     def test():
@@ -92,6 +113,7 @@ if __name__ == "__main__":
         print "func end"
         return 'test OK'
 
+    @ensureDone(3)
     @setTimeout(3)
     def test2():
         print 'test2 start'
