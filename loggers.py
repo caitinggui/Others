@@ -69,6 +69,7 @@ log_setting = {
             'formatter': 'standard',
             "filename": "log.log",
             # 如果没有使用并发的日志处理类，在多实例的情况下日志会出现缺失
+            # pip install ConcurrentLogHandler==0.9.1
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
             # 当达到100MB时分割日志
             'maxBytes': 1024 * 1024 * 100,
