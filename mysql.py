@@ -41,5 +41,60 @@ cur.execute("INSERT INTO term_score (term, crter_max, docid_cmax) VALUES (%s, %s
 import torndb
 mysql = torndb.Connection(host='192.168.112.32',user='username',password='123456',database='law')
 
-# 查找两个表的不同行, A表有的，但是B表没有的
-'SELECT t1.*, t2.*  from A as t1 LEFT JOIN B as t2 ON t1.`name`=t2.`name` OR t1.`name`=t2.new_name WHERE t2.`name` is NULL'
+
+##############  一些常用的SQL语句  ##############
+# 创建表
+sql = '''
+CREATE TABLE `NewTable` (
+`id`  integer NOT NULL AUTO_INCREMENT ,
+`name`  varchar(128) NOT NULL DEFAULT '' ,
+`birthday`  date NULL ,
+`content`  text NOT NULL COMMENT '内容' ,
+PRIMARY KEY (`id`),
+INDEX `name_index` (`name`) USING BTREE
+);
+'''
+
+
+# 插入数据
+"insert into salary (id, name, sex, salary) values ('1', 'A', 'm', '2500');"
+
+
+# 删
+'dorp database db_name'  # 删除库
+'drop table table_name'  # 删除表, 表结构也没了
+"DELETE FROM salary WHERE id=2;"  # 删除某些特定的行
+"DELETE FROM salary;"  # 清空表的数据，但是表结构还在
+
+
+# 改
+
+## 替换字符串
+"""
+update table_name set
+content = replace(content, '\\n', '\n'),
+name = replace(name, '\n', ' ')
+"""
+
+
+# 查
+
+## 查找两个表的不同行, A表有的，但是B表没有的
+sql = 'SELECT t1.*, t2.*  from A as t1 LEFT JOIN B as t2 ON t1.`name`=t2.`name` OR t1.`name`=t2.new_name WHERE t2.`name` is NULL'
+
+## case的使用
+"""
+UPDATE salary SET
+    sex = CASE sex
+        WHEN 'm' THEN 'f' ELSE 'm'
+    END;
+"""
+
+
+# 管理
+## 修改用户连接ip权限
+'''
+use user;
+update user set host = '%' where user = 'root';
+flush privileges;
+'''
