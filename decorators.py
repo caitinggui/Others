@@ -7,7 +7,11 @@ import logging
 import functools
 from threading import Thread
 
-from exceptions import RuntimeError
+
+class TimeoutError(Exception):
+    pass
+
+
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -81,9 +85,9 @@ def showTicker(func):
     return wrapper
 
 
-def setTimeout(runtime):
+def setTimeout(runtime, msg='Function call timed out'):
     def handle(signum, frame):
-        raise RuntimeError("Out of runtime!")
+        raise TimeoutError(msg)
 
     def decorator(func):
         @functools.wraps(func)
