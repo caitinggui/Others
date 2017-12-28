@@ -16,16 +16,21 @@ class Row(dict):
         except KeyError:
             raise AttributeError(name)
 
+    def __setattr__(self, name, value):
+        self[name] = value
+
 
 if __name__ == '__main__':
     td = {'one': 1, 'two': 2, 'three': 3}
     print "----- Row -----"
     # tda is still a dict
     tda = AttrDict(td)
-    print tda
     assert td['one'] == tda.one
+    tda.test = '3'
+    print tda
 
     tdb = Row(td)
     print "----- Row -----"
-    print tdb
     print tdb.one
+    tdb.test = '4'
+    print tdb
