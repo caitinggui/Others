@@ -7,6 +7,9 @@ class AttrDict(dict):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
+    def noUse():
+        print 'nouse'
+
 
 class Row(dict):
     """A dict that allows for object-like property access syntax."""
@@ -19,6 +22,8 @@ class Row(dict):
     def __setattr__(self, name, value):
         self[name] = value
 
+    def noUse():
+        print 'nouse'
 
 if __name__ == '__main__':
     td = {'one': 1, 'two': 2, 'three': 3}
@@ -28,9 +33,13 @@ if __name__ == '__main__':
     assert td['one'] == tda.one
     tda.test = '3'
     print tda
+    print tda.__dict__
+    print AttrDict.__dict__
 
     tdb = Row(td)
     print "----- Row -----"
     print tdb.one
     tdb.test = '4'
     print tdb
+    print tdb.__dict__
+    print Row.__dict__

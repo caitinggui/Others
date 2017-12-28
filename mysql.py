@@ -79,7 +79,7 @@ name = replace(name, '\n', ' ')
 
 # 查
 
-## 查找两个表的不同行, A表有的，但是B表没有的
+## 查找两个表的不同行, A表有的，但是B表没有的, 主要是join
 sql = 'SELECT t1.*, t2.*  from A as t1 LEFT JOIN B as t2 ON t1.`name`=t2.`name` OR t1.`name`=t2.new_name WHERE t2.`name` is NULL'
 
 ## case的使用
@@ -89,6 +89,9 @@ UPDATE salary SET
         WHEN 'm' THEN 'f' ELSE 'm'
     END;
 """
+
+## 重复的值
+'SELECT Email FROM Person GROUP BY Email having COUNT(Email)>1;'
 
 
 # 管理

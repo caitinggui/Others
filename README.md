@@ -15,3 +15,5 @@ A repo for something interesting.
 10. 前置斜线与后置斜线的区别：
     - 前置斜线: .gitignore 是默认以相对路径为基准的，子目录下的 .gitignore 优先应用自己的规则然后再递归向上一直找到 git 的根（也就是 .git 存在的那个目录）,一般不需要使用前置斜线，除非要屏蔽以*根目录*为起点的某个特定文件
     - 后置斜线: static/ 和 static 是不一样的，前者只匹配目录 static，而后者则可以匹配同名的目录、文件名、符号链接等等
+
+passwd = 'dbumqtpqdakubebc'  # 填入发送方邮箱的授权码
