@@ -1,5 +1,9 @@
 #-*- encoding:utf-8 -*-
 
+"""
+Row的方式好一些，可以自定义没有key时的处理方案，而且不破坏原有的__dict__
+"""
+
 class AttrDict(dict):
     """Dict that can get attribute by dot"""
 
