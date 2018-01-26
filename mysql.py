@@ -82,6 +82,9 @@ name = replace(name, '\n', ' ')
 ## 查找两个表的不同行, A表有的，但是B表没有的, 主要是join
 sql = 'SELECT t1.*, t2.*  from A as t1 LEFT JOIN B as t2 ON t1.`name`=t2.`name` OR t1.`name`=t2.new_name WHERE t2.`name` is NULL'
 
+## A表有uuid, keyword, B表有uuid, keyword, 两个表uuid可能相同，但keyword不同，求uuid的并集 , 主要是full join，因为mysql没有full join，所以用union实现
+sql = "insert into laws_finance (uuid, keyword) select a.uuid,  concat(a.keyword,' ', b.keyword) from laws_finance1 a left join laws_finance2 b on a.uuid=b.uuid union select b.uuid concat(a.keyword, " ", b.keyword) from laws_finance1 a right join laws_finance2 b on b.uuid=a.uuid;")"
+
 ## case的使用
 """
 UPDATE salary SET
