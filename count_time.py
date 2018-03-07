@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 class Timer(object):
 
-    def __init__(self, func=''):
-        self.func = func
+    def __init__(self, name=''):
+        self.name = name
         self.start = time.time()
         self.end = None
         self.cost = None
@@ -22,7 +22,7 @@ class Timer(object):
     def __exit__(self, exc_type, exc_value, exc_trace):
         self.end = time.time()
         self.cost = self.end - self.start
-        logger.info("%s time cost: %s", self.func, self.cost)
+        logger.info("%s time cost: %s", self.name, self.cost)
         return self.cost
 
 
